@@ -11,6 +11,24 @@
 (defun space-or-newline? (c)
   (or (char= c #\Space) (char= c #\Newline)))
 
+(defun parse-height (s)
+  (let* ((l-2 (min (length s) 2))
+         (unit (subseq s (- (length s) l-2) (length s)))
+         (num (parse-integer s :end (- (length s) l-2) :junk-allowed 't)))
+    (cons num unit)))
+
+(defun parse-value (key-sym value)
+  (case key-sym
+    ((byr)
+     (parse-integer value))
+    ((iyr)
+     (parse-integer value))
+    ((eyr)
+     (parse-integer value))
+    ((hgt)
+     (parse-height value))
+    (t value)))
+
 (defun parse-fields (entry doc start-ix)
   (let ((field-sep-ix (position #\: entry :start start-ix))
         (next-field-ix (position-if #'space-or-newline? entry :start start-ix)))
@@ -20,7 +38,7 @@
              (key-sym (intern (string-upcase key)))
              (value (subseq entry (+ field-sep-ix 1) (or next-field-ix (length entry)))))
         (funcall (fdefinition (list 'setf key-sym))
-                 value
+                 (parse-value key-sym value)
                  doc)
         (if (eq next-field-ix 'nil)
           doc
@@ -58,3 +76,31 @@
   (let* ((s (path-as-sequence "day4.input"))
          (entries (parse-entries s 0 0)))
     (count-if is-valid? (mapcar #'parse-doc entries))))
+
+(defun part2-valid? (doc)
+  (and
+   (part1-valid? doc)
+   (and (>= (byr doc) 1920)
+        (<= (byr doc) 2002))
+   (and (>= (iyr doc) 2010)
+        (<= (iyr doc) 2020))
+   (and (>= (eyr doc) 2020)
+        (<= (eyr doc) 2030))
+   (destructuring-bind (num . unit) (hgt doc)
+     (cond
+       ((string= unit "cm")
+        (and (>= num 150) (<= num 193)))
+       ((string= unit "in")
+        (and (>= num 59) (<= num 79)))
+       (t 'nil)))
+   (cl-ppcre:scan "^#[0-9a-f]{6}$" (hcl doc))
+   (some #'identity
+         (mapcar (lambda (x) (string= x (ecl doc)))
+                 '("amb" "blu" "brn" "gry" "grn" "hzl" "oth")))
+   (cl-ppcre:scan "^[0-9]{9}$" (pid doc))))
+
+(defun part1 ()
+  (run-part #'part1-valid?))
+
+(defun part2 ()
+  (run-part #'part2-valid?))
