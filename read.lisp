@@ -9,3 +9,11 @@
    (let ((lines (read-lines in '())))
      (close in)
      lines)))
+
+(defun compose (&rest funs)
+  (lambda (arg)
+    (reduce
+     (lambda (f arg) (funcall f arg))
+     funs
+     :from-end t
+     :initial-value arg)))
