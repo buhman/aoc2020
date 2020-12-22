@@ -2,13 +2,11 @@
   (let ((line (read-line in nil)))
     (if line
       (read-lines in (cons line l))
-      (nreverse l))))
+      (reverse l))))
 
 (defun read-lines-from-file (path)
- (let ((in (open path)))
-   (let ((lines (read-lines in '())))
-     (close in)
-     lines)))
+  (with-open-file (stream path)
+    (read-lines stream '())))
 
 (defun compose (&rest funs)
   (lambda (arg)
@@ -17,3 +15,9 @@
      funs
      :from-end t
      :initial-value arg)))
+
+(defun read-string-from-file (path)
+  (with-open-file (stream path)
+    (let ((s (make-string (file-length stream))))
+      (read-sequence s stream)
+      s)))

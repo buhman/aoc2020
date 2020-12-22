@@ -1,3 +1,7 @@
+(ql:quickload "cl-ppcre")
+
+(load "read.lisp")
+
 (defstruct (doc :conc-name)
   (byr)
   (iyr)
@@ -53,12 +57,6 @@
         (has? (lambda (s) (funcall (symbol-function s) doc))))
     (every #'identity (mapcar has? required))))
 
-(defun path-as-sequence (path)
-  (with-open-file (stream path)
-    (let ((s (make-string (file-length stream))))
-      (read-sequence s stream)
-      s)))
-
 (defun parse-entries (s entry-ix start-ix)
   (let ((nl-ix (position #\Newline s :start start-ix)))
     (cond
@@ -73,7 +71,7 @@
        (parse-entries s entry-ix (+ nl-ix 1))))))
 
 (defun run-part (is-valid?)
-  (let* ((s (path-as-sequence "day4.input"))
+  (let* ((s (read-string-from-file "day4.input"))
          (entries (parse-entries s 0 0)))
     (count-if is-valid? (mapcar #'parse-doc entries))))
 
