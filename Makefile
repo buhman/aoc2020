@@ -1,6 +1,5 @@
-#ARCH = -march=rv32i -mabi=ilp32
-ARCH = -march=rv32im -mabi=ilp32
-CFLAGS = -ffreestanding -nostdlib -mpreferred-stack-boundary=4 -Og
+ARCH = -march=rv32i -mabi=ilp32
+CFLAGS = -ffreestanding -nostdlib -mpreferred-stack-boundary=3 -Og
 
 TARGET = riscv32-unknown-elf-
 CC = $(TARGET)gcc
@@ -14,7 +13,10 @@ elfs := $(patsubst %.c,%.elf,$(wildcard *.c))
 all: $(elfs)
 
 %.elf: %.s Makefile
-	$(AS) $(ARCHM) $< -o $@
+	$(AS) $(ARCH) $< -o $@
+
+%.elf: %.c Makefile
+	$(CC) $(ARCH) $(CFLAGS) $< -o $@
 
 %.bin: %.elf
 	$(OBJCOPY) -O binary $< $@
