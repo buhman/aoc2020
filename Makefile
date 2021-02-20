@@ -8,9 +8,10 @@ LD = $(TARGET)ld
 OBJCOPY = $(TARGET)objcopy
 OBJDUMP = $(TARGET)objdump
 
-elfs := $(patsubst %.c,%.elf,$(wildcard *.c))
+I  = day5/part1.imem
+I += day5/input.dmem
 
-all: $(elfs)
+all: $(I)
 
 %.elf: %.s Makefile
 	$(AS) $(ARCH) $< -o $@
@@ -21,11 +22,14 @@ all: $(elfs)
 %.bin: %.elf
 	$(OBJCOPY) -O binary $< $@
 
-%.hex: %.bin
-	python binhex.py $< > $@
+%.imem: %.bin
+	python binhex.py $< 256 > $@
+
+%.dmem: %.txt %.py
+	python $(dir $<)input.py $< 2048 > $@
 
 clean:
-	rm -f *.o *.elf *.bin *.out
+	rm -f */*.o */*.elf */*.bin */*.out */*.imem */*.dmem */*.hex
 
 dump: $(F)
 	$(OBJDUMP) --disassembler-options=numeric,no-aliases -d $<

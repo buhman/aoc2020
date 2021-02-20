@@ -1,4 +1,6 @@
 *.bin
 *.elf
 *.hex
+*.dmem
+*.imem
 */puzzle
