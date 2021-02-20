@@ -10,6 +10,8 @@ OBJDUMP = $(TARGET)objdump
 
 I  = day5/part1.imem
 I += day5/input.dmem
+I  = day10/part1.imem
+I += day10/input.dmem
 
 all: $(I)
 
