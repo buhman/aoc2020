@@ -1,3 +1,8 @@
+/*
+ instructions 97446
+ cycles 98693
+*/
+
         lui s3,1 /* 4096 */
         addi s2,zero,1023 /* lowest seat id */
         addi s1,zero,0    /* highest seat id */
@@ -47,6 +52,9 @@ _loop2:
 _missing:
         lui t1,0xffff0  /* high memory */
         sw t0,0x700(t1)
+
+        csrrs t3,instret,zero
+        sw t3,0x700(t1)
 _forever:
         jal zero,_forever
 
