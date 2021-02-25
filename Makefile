@@ -10,8 +10,10 @@ OBJDUMP = $(TARGET)objdump
 
 I  = day5/part1.imem
 I += day5/input.dmem
-I  = day10/part1.imem
+I += day10/part1.imem
 I += day10/input.dmem
+I += day15/part1.imem
+I += day15/input.dmem
 
 all: $(I)
 
@@ -28,7 +30,7 @@ all: $(I)
 	python binhex.py $< 256 > $@
 
 %.dmem: %.txt %.py
-	python $(dir $<)input.py $< 2048 > $@
+	python $(dir $<)input.py $< | python pad.py 2048 > $@
 
 clean:
 	rm -f */*.o */*.elf */*.bin */*.out */*.imem */*.dmem */*.hex
