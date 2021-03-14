@@ -17,11 +17,14 @@ I += day15/input.dmem
 
 all: $(I)
 
-%.elf: %.s Makefile
+%.o: %.s Makefile
 	$(AS) $(ARCH) $< -o $@
 
-%.elf: %.c Makefile
+%.o: %.c Makefile
 	$(CC) $(ARCH) $(CFLAGS) $< -o $@
+
+%.elf: %.o
+	$(LD) -T sections.lds $< -o $@
 
 %.bin: %.elf
 	$(OBJCOPY) -O binary $< $@
