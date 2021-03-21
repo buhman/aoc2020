@@ -7,8 +7,8 @@ SECTIONS {
     .text :
     {
         . = ALIGN(4);
-        *(.text.stack)
-        *(.text.start)
+        *(.text.vector);
+        . = ALIGN(64);
         *(.text)
     } >IMEM
 }

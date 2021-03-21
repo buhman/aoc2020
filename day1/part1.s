@@ -1,3 +1,17 @@
+/*
+single-stage:
+  instret = 36081
+  cycle = 42111
+pipelined:
+  instret = 36081
+  cycle = 59973
+*/
+
+        .section .text.vector
+        jal x0,_start
+
+        .section .text
+_start:
         addi x31,x0,200  /* (len(input)) */
         slli x31,x31,2    /* ..as bytes   */
 
@@ -20,9 +34,12 @@
         jal x0,.loop2
 
 .found:
-        mul x12,x10,x11
-        sw x12,1020(x0)
-        addi x30,x0,2040
-        sw x12,8(x30)
+        /*mul x12,x10,x11*/
+        addi x0,x11,0
+        addi x0,x10,0
+        sw x11,0(x31)
+        sw x10,4(x31)
+        csrrs x30,minstret,x0
+        csrrs x30,mcycle,x0
 .stop:
-        jal x0,0
+        jal x0,.stop
