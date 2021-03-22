@@ -18,28 +18,26 @@ _start:
         addi x4,x0,2020  /* desired sum */
 
         addi x1,x0,-4
-.inc10:
+_inc10:
         addi x1,x1,4
-        beq x1,x31,.stop
+        beq x1,x31,_forever
         addi x2,x1,4
         lw x10,0(x1)
-.loop2:
+_loop2:
         lw x11,0(x2)
 
         add x12,x10,x11
-        beq x12,x4,.found
-.inc11:
+        beq x12,x4,_found
+_inc11:
         addi x2,x2,4
-        beq x2,x31,.inc10
-        jal x0,.loop2
+        beq x2,x31,_inc10
+        jal x0,_loop2
 
-.found:
-        /*mul x12,x10,x11*/
+_found:
+        /*mul x0,x10,x11*/
         addi x0,x11,0
         addi x0,x10,0
-        sw x11,0(x31)
-        sw x10,4(x31)
         csrrs x30,minstret,x0
         csrrs x30,mcycle,x0
-.stop:
-        jal x0,.stop
+_forever:
+        jal x0,_forever
