@@ -1,15 +1,15 @@
 /*
 single-stage:
-  instret = 36080
-  cycle = 42110
+  instret = 36111
+  cycle = 42141
 
   0.857 instructions/cycle
 
 pipelined:
-  instret = 36077
-  cycle = 59970
+  instret = 36108
+  cycle = 42208
 
-  0.602 instructions/cycle
+  0.855 instructions/cycle
 */
 
         .section .text.vector
@@ -22,9 +22,8 @@ _start:
 
         addi x4,x0,2020  /* desired sum */
 
-        addi x1,x0,-4
-_inc10:
-        addi x1,x1,4
+        addi x1,x0,0
+_loop1:
         beq x1,x31,_forever
         addi x2,x1,4
         lw x10,0(x1)
@@ -37,6 +36,9 @@ _inc11:
         addi x2,x2,4
         beq x2,x31,_inc10
         jal x0,_loop2
+_inc10:
+        addi x1,x1,4
+        jal x0,_loop1
 
 _found:
         /*mul x0,x10,x11*/
