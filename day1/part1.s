@@ -2,9 +2,14 @@
 single-stage:
   instret = 36080
   cycle = 42110
+
+  0.857 instructions/cycle
+
 pipelined:
   instret = 36077
   cycle = 59970
+
+  0.602 instructions/cycle
 */
 
         .section .text.vector
