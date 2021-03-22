@@ -1,10 +1,10 @@
 /*
 single-stage:
-  instret = 36081
-  cycle = 42111
+  instret = 36080
+  cycle = 42110
 pipelined:
-  instret = 36081
-  cycle = 59973
+  instret = 36077
+  cycle = 59970
 */
 
         .section .text.vector

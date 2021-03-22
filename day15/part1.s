@@ -1,8 +1,18 @@
 /*
-part1:
-  cycles: 40054
-  instructions: 34008
+single-stage: 0.849 cpi
+  instret = 34008
+  cycle = 40055
+
+pipelined: 0.915 cpi
+  instret = 34004
+  cycle = 37146
 */
+        .section .text.vector
+        jal x0,_start
+
+
+        .section .text
+_start:
         lui x31,0x2     /* 0x2000 ; the length of ram in bytes */
         addi x30,x31,-4 /* 0x1ffc ; the last word of ram */
         /* input is from halfword [0,N) of ram, for N inputs */
@@ -47,7 +57,6 @@ _read_input:
         addi x2,x2,1
         blt x2,x29,_read_input
 
-
         addi x2,x2,-1
 _turn:
         /* last number spoken is x4 */
@@ -74,10 +83,8 @@ _not_seen:
 
 __done:
         lui x1,0xffff0  /* high memory */
-        sw x4,0x700(x1)
-        csrrs x2,cycle,zero
-        sw x2,0x700(x1)
-        csrrs x2,instret,zero
-        sw x2,0x700(x1)
+        addi x0,x4,0
+        csrrs x2,mcycle,zero
+        csrrs x2,minstret,zero
 _forever:
         jal x0,_forever
