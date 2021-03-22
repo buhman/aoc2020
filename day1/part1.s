@@ -1,15 +1,15 @@
 /*
 single-stage:
-  instret = 30116
-  cycle = 36146
+  instret = 30117
+  cycle = 36147
 
   0.833 instructions/cycle
 
 pipelined:
-  instret = 30113
-  cycle = 36214
+  instret = 30114
+  cycle = 30218
 
-  0.831 instructions/cycle
+  0.997 instructions/cycle
 */
 
         .section .text.vector
@@ -29,10 +29,9 @@ _loop1:
         lw x10,0(x1)
 _loop2:
         lw x11,0(x2)
-
+        addi x2,x2,4
         add x12,x10,x11
         beq x12,x4,_found
-        addi x2,x2,4
         blt x2,x31,_loop2
 
         addi x1,x1,4
