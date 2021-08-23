@@ -1,0 +1,99 @@
+        .text
+        .global _start
+_start:
+
+define(`const_one', x31)dnl
+        addi    const_one, x0, 1
+define(`const_newline', x30)dnl
+        addi    const_newline, x0, 0xa
+define(`const_hash', x29)dnl
+        addi    const_hash, x0, 0x23
+define(`const_period', x28)dnl
+        addi    const_period, x0, 0x2e
+define(`const_two', x27)dnl
+        addi    const_two, x0, 2
+
+define(`input',`x1')dnl
+	lui     input, %hi(__input)
+	addi    input, input, %lo(__input)
+
+define(`ilen',`x2')dnl
+        lhu     ilen, 0(input)
+
+        addi    input, input, 2
+        add     ilen, ilen, input
+
+define(`grid', `x3')dnl
+define(`width', `x4')dnl
+        addi    grid, input, -2
+
+define(`row_ix', `x5')dnl
+define(`col_ix', `x12')dnl
+define(`col_bit', `x13')dnl
+define(`col', `x14')dnl
+        addi    row_ix, grid, 0
+        addi    col_ix, x0, 0
+        addi    col, x0, 0
+
+        /* begin _next_char loop */
+_next_char:
+define(`c', `x10')dnl
+        lbu     c, 0(input)
+
+        beq     c, const_newline, _newline
+        beq     c, const_hash, _tree
+        beq     c, const_period, _no_tree
+        ebreak /* `input' is invalid */
+
+_tree:
+        sll     col_bit, const_one, col_ix
+        or      col, col, col_bit
+_no_tree:
+        addi    col_ix, col_ix, 1
+
+        addi    input, input, 1
+        blt     input, ilen, _next_char
+        jal     x0, _next_char_break
+
+_newline:
+        sw      col, 0(row_ix)
+        addi    col, x0, 0
+        addi    row_ix, row_ix, 4
+        addi    width, col_ix, 0
+        addi    col_ix, x0, 0
+
+        addi    input, input, 1
+        blt     input, ilen, _next_char
+
+_next_char_break:
+        /* end _next_char loop */
+
+
+        /* begin slope loop */
+define(`trees', `x10')dnl
+define(`x', `x11')dnl
+define(`y', `x12')dnl
+define(`dx', `3')dnl
+define(`dy', `x16')dnl
+define(`temp', `x15')dnl
+
+        addi    trees, x0, 0
+        addi    x, x0, 0
+        addi    y, grid, 0
+        slli    dy, const_one, 2
+_count_tree:
+        lw      col, 0(y)
+        srl     temp, col, x
+        andi    temp, temp, 1
+        add     trees, trees, temp
+_added:
+        add     y, y, dy
+        addi    x, x, dx
+        blt     x, width, _nowrap_x
+        sub     x, x, width
+_nowrap_x:
+        blt     y, row_ix, _count_tree
+
+        ebreak
+
+        /* end slope loop */
