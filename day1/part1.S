@@ -1,6 +1,13 @@
         .section .text
+#ifdef _START
         .global _start
 _start:
+#endif
+        .global day1_part1
+day1_part1:
+        mov fp, sp
+        str lr, [sp, #-4]!
+
         /*ldr r0, =__sample*/
         ldr r0, =__input
         ldr r10, [r0], #4 /* size of input */
@@ -25,10 +32,17 @@ _outer_loop:
         bne _outer_loop
 
         /* part1: multiply */
+_mul:
         mul r10, r0, r1
+#ifdef _START
 _stop:
         b _stop
-
+#else
+        mov sp, fp
+        ldr lr, [fp, #-4]!
+        mov r0, r10
+        bx lr
+#endif
 
 compare:
         /* arg: r0 (int) */
